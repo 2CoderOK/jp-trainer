@@ -84,14 +84,21 @@ NOTES_X = {
 
 
 class NoteDisplay:
+    """
+    A main class for UI display
+    """
+
     def __init__(self, button_callback, button_replay_callback) -> None:
         self.window = Tk()
+        self.window.title("Jazz Piano Trainer")
         self.window.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
 
         self.frame = Frame(self.window)
         self.frame.pack(side=RIGHT)
 
-        self.canvas = Canvas(self.frame, bg="white", width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+        self.canvas = Canvas(
+            self.frame, bg="white", width=WINDOW_WIDTH, height=WINDOW_HEIGHT
+        )
         self.canvas.pack()
 
         self.keys_img = ImageTk.PhotoImage(Image.open("images/keys.png"))
@@ -103,10 +110,15 @@ class NoteDisplay:
             self.images[i] = image
 
         self.notes_widgets = {}
-        self.button = Button(self.canvas, text="NEXT", command=button_callback, height=2, width=20)
-        self.button_replay = Button(self.canvas, text="REPLAY", command=button_replay_callback, height=2, width=20)
+        self.button = Button(
+            self.canvas, text="NEXT", command=button_callback, height=2, width=20
+        )
+        self.button_replay = Button(
+            self.canvas, text="REPLAY", command=button_replay_callback, height=2, width=20
+        )
 
         self.q_label = Label(self.canvas, text="Press NEXT to Start", font=("Arial", 25))
+        self.q2_label = Label(self.canvas, text="", font=("Arial", 25))
 
         self.a_img = ImageTk.PhotoImage(Image.open("images/placeholder.png"))
         self.a_label = Label(self.canvas, text="")
@@ -114,18 +126,27 @@ class NoteDisplay:
         self.option_var = StringVar(self.canvas)
         self.option_var.set("MODES")
         self.selected_option = "MODES"
-        self.option_widget = OptionMenu(self.canvas, self.option_var, "MODES", "CHORDS", command=self.option_update)
+        self.option_widget = OptionMenu(
+            self.canvas, self.option_var, "MODES", "CHORDS", command=self.option_update
+        )
 
         self.canvas.create_window(300, 58, window=self.option_widget)
         self.canvas.create_window(300, 100, window=self.button)
         self.canvas.create_window(300, 150, window=self.button_replay)
         self.canvas.create_window(700, 100, window=self.q_label)
+        self.canvas.create_window(700, 200, window=self.q2_label)
         self.canvas.create_window(1000, 100, window=self.a_label)
 
-    def option_update(self, selected_option):
+    def option_update(self, selected_option) -> None:
+        """
+        Update a selected option
+        """
         self.selected_option = selected_option
 
-    def get_note_image(self, note_id):
+    def get_note_image(self, note_id: int) -> str:
+        """
+        Get a note`s image
+        """
         real_note = None
         for n in [72, 60, 48, 36]:
             if note_id >= n:
@@ -133,22 +154,38 @@ class NoteDisplay:
                 break
         return NOTES_TO_IMAGE_MAP[real_note] if real_note is not None else None
 
-    def add_note(self, note_id, is_green=True):
+    def add_note(self, note_id: int, is_green: bool = True) -> None:
+        """
+        Add a note widget to the UI
+        """
         note_name = self.get_note_image(note_id)
         note_image_name = f"key_green_{note_name}" if is_green else f"key_red_{note_name}"
-        new_img = self.canvas.create_image(NOTES_X[note_id], NOTES_Y, image=self.images[note_image_name], anchor="w")
+        new_img = self.canvas.create_image(
+            NOTES_X[note_id], NOTES_Y, image=self.images[note_image_name], anchor="w"
+        )
         self.notes_widgets[note_id] = new_img
 
-    def remove_note(self, note_id):
+    def remove_note(self, note_id: int) -> None:
+        """
+        Remove a note widget from the UI
+        """
         if note_id in self.notes_widgets:
             self.canvas.delete(self.notes_widgets[note_id])
             del self.notes_widgets[note_id]
 
-    def update_question(self, text):
-        self.q_label.config(text=text)
-        self.q_label.text = text
+    def update_question(self, txt: str) -> None:
+        """
+        Update a question text (UI)
+        """
+        self.q_label.config(text=txt)
+        self.q_label.text = txt
 
-    def update_answer(self, image_path):
+    def update_answer(self, image_path: str, txt: str) -> None:
+        """
+        Update an answer image (UI)
+        """
         new_img = ImageTk.PhotoImage(Image.open(image_path))
         self.a_label.config(image=new_img)
         self.a_label.image = new_img
+        self.q2_label.config(text=txt)
+        self.q2_label.text = txt
