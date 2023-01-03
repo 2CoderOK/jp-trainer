@@ -114,7 +114,8 @@ def note_handler(note: mido.Message) -> None:
                     if note_id in i:
                         ids_to_remove.append(required_notes.index(i))
                 for i in ids_to_remove:
-                    del required_notes[i]
+                    if i in required_notes:
+                        del required_notes[i]
                 if len(required_notes) == 0:
                     if timer:
                         timer.cancel()
