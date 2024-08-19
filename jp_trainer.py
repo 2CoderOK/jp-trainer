@@ -1,11 +1,11 @@
 import sys
-import threading
+
 
 import mido
-from pygame import mixer
+
 
 from note_display import NoteDisplay
-from sampler import Sampler
+
 from theory import SCALES, Theory
 
 notes_on: list = []
@@ -17,19 +17,9 @@ note_ui: NoteDisplay
 replay_file: str
 img_path: str
 answer_text: str
-timer: threading.Timer = None
 
-mixer.init()
-
-sampler: Sampler
 th = Theory()
 
-
-def timer_func() -> None:
-    """
-    A timer function that updates the screen with an answer
-    """
-    note_ui.update_answer(img_path, answer_text)
 
 
 def generate_path(t_item: dict) -> str:
@@ -43,16 +33,6 @@ def generate_path(t_item: dict) -> str:
     )
     print(file_path)
     return file_path
-
-
-def replay_handler() -> None:
-    """
-    Replay function UI handler
-    """
-    if replay_file:
-        mixer.music.stop()
-        mixer.music.play()
-
 
 def button_handler() -> None:
     """
@@ -90,13 +70,7 @@ def button_handler() -> None:
     note_ui.update_question(q)
     note_ui.update_answer("images/placeholder.png", "")
 
-    if timer:
-        timer.cancel()
-    timer = threading.Timer(10, timer_func)
-    timer.start()
-
-
-note_ui = NoteDisplay(button_handler, replay_handler)
+note_ui = NoteDisplay(button_handler)
 
 
 def note_handler(note: mido.Message) -> None:
@@ -106,7 +80,7 @@ def note_handler(note: mido.Message) -> None:
     if note.type in ["note_on", "note_off"]:
         note_id = int(note.note) if note.note is not None else -1
         if note.type == "note_on":
-            sampler.play(note_id, note.velocity)
+
             is_green = False
             if note_id in good_notes:
                 ids_to_remove = []
@@ -125,7 +99,7 @@ def note_handler(note: mido.Message) -> None:
             if note.note not in notes_on:
                 notes_on.append(note.note)
         elif note.type == "note_off":
-            sampler.stop(note_id)
+
             note_ui.remove_note(note_id)
             if note_id in notes_on:
                 notes_on.remove(note_id)
@@ -134,10 +108,18 @@ def note_handler(note: mido.Message) -> None:
 try:
     ignore_velocity = True if "--ignore_velocity" in sys.argv else False
     sustain = True if "--sustain" in sys.argv else False
-    sampler = Sampler(mixer, ignore_velocity, sustain)
-    print(mido.get_input_names())
-    portname = "microKEY-37 1 KEYBOARD 0"  # replace with your MIDI INPUT
-    with mido.open_input(portname, callback=note_handler) as port:
+
+    # First midi device selected from array returned from the command mido.get_input_names()
+    # In the unlikely event you have multiple midi devices you could wrap the command
+    # in a print statement and amend the command below accordingly.
+
+    port_name = (mido.get_input_names()[0])
+
+
+
+
+
+    with mido.open_input(port_name, callback=note_handler) as port:
         print("Using {}".format(port))
         note_ui.window.mainloop()
 except Exception as e:
