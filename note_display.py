@@ -88,7 +88,7 @@ class NoteDisplay:
     A main class for UI display
     """
 
-    def __init__(self, button_callback, button_replay_callback) -> None:
+    def __init__(self, button_callback) -> None:
         self.window = Tk()
         self.window.title("Jazz Piano Trainer")
         self.window.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
@@ -113,9 +113,7 @@ class NoteDisplay:
         self.button = Button(
             self.canvas, text="NEXT", command=button_callback, height=2, width=20
         )
-        self.button_replay = Button(
-            self.canvas, text="REPLAY", command=button_replay_callback, height=2, width=20
-        )
+
 
         self.q_label = Label(self.canvas, text="Press NEXT to Start", font=("Arial", 25))
         self.q2_label = Label(self.canvas, text="", font=("Arial", 25))
@@ -132,7 +130,7 @@ class NoteDisplay:
 
         self.canvas.create_window(300, 58, window=self.option_widget)
         self.canvas.create_window(300, 100, window=self.button)
-        self.canvas.create_window(300, 150, window=self.button_replay)
+
         self.canvas.create_window(700, 100, window=self.q_label)
         self.canvas.create_window(700, 200, window=self.q2_label)
         self.canvas.create_window(1000, 100, window=self.a_label)
