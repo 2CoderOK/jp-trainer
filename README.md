@@ -1,13 +1,12 @@
-# jp-trainer
-Jazz Piano Trainer 
+Jazz Piano Trainer
 
-This is a desktop application that might help you learn modes and chords ;)
-You can use your midi keyboard to input notes.
+This is a desktop application that might help you learn scales, modes and chords ;) You can use your midi keyboard to input notes.
 
-The application is using midio, python-rtmidi, pygame and tkinter libraries.
+The application uses mido, python-rtmidi, and pyqt6
 
-Here you can watch a video on how this application was created: https://www.youtube.com/watch?v=WCQai649s_Q
+This app was inspired by the app of the same name by 2CoderOK but I have totally rewritten the code and extended functionality far beyond the original.
 
-[<img alt="JP Trainer" src="https://github.com/2CoderOK/jp-trainer/blob/main/jp_trainer_preview.png" />](https://www.youtube.com/watch?v=WCQai649s_Q)
+# Credits to
 
-[<img alt="Buy me a coffee" height="50px" src="https://github.com/2CoderOK/jp-trainer/blob/main/yellow-button.png" />](https://www.buymeacoffee.com/coderok)
+- 2CoderOK for the idea and inspiration
+- Copilot (which made the process much easier)

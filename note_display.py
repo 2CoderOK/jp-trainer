@@ -1,191 +1,114 @@
-from tkinter import *
+from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QListWidget, QListWidgetItem,QAbstractItemView
+from PyQt6.QtGui import QPixmap, QFont
+import mido
+from theory import  ScaleGenerator
 
-from PIL import Image, ImageTk
-
-WINDOW_HEIGHT = 800
-WINDOW_WIDTH = 1913
-
-IMAGE_NAMES = [
-    "key_green_left",
-    "key_green_mid",
-    "key_green_right",
-    "key_green_top",
-    "key_red_left",
-    "key_red_mid",
-    "key_red_right",
-    "key_red_top",
-]
-NOTES_TO_IMAGE_MAP = {
-    0: "left",
-    1: "top",
-    2: "mid",
-    3: "top",
-    4: "right",
-    5: "left",
-    6: "top",
-    7: "mid",
-    8: "top",
-    9: "mid",
-    10: "top",
-    11: "right",
-    12: "left",
-}
-NOTES_Y = 401
-NOTES_X = {
-    36: 3,
-    37: 52,
-    38: 71,
-    39: 120,
-    40: 139,
-    41: 207,
-    42: 256,
-    43: 275,
-    44: 324,
-    45: 343,
-    46: 393,
-    47: 412,
-    48: 480,
-    49: 529,
-    50: 548,
-    51: 597,
-    52: 616,
-    53: 685,
-    54: 733,
-    55: 753,
-    56: 802,
-    57: 821,
-    58: 870,
-    59: 889,
-    60: 958,
-    61: 1007,
-    62: 1026,
-    63: 1075,
-    64: 1094,
-    65: 1163,
-    66: 1211,
-    67: 1231,
-    68: 1280,
-    69: 1299,
-    70: 1348,
-    71: 1367,
-    72: 1436,
-    73: 1485,
-    74: 1504,
-    75: 1553,
-    76: 1572,
-    77: 1640,
-    78: 1689,
-    79: 1709,
-    80: 1757,
-    81: 1776,
-    82: 1825,
-    83: 1845,
-}
+class MainWindow(QMainWindow ):
 
 
-class NoteDisplay:
-    """
-    A main class for UI display
-    """
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Jazz Piano Trainer")
+        self.setGeometry(500, 300, 1060, 400)
+        self.labels = {}
 
-    def __init__(self, button_callback, button_replay_callback) -> None:
-        self.window = Tk()
-        self.window.title("Jazz Piano Trainer")
-        self.window.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+        self.setup_button()
+        self.setup_labels()
+        self.setup_list_widgets()
 
-        self.frame = Frame(self.window)
-        self.frame.pack(side=RIGHT)
+        self.BASE_PATH = "/Users/williamcorney/PycharmProjects/jp-trainer/images/key_"
 
-        self.canvas = Canvas(
-            self.frame, bg="white", width=WINDOW_WIDTH, height=WINDOW_HEIGHT
-        )
-        self.canvas.pack()
+        self.NOTE_VALUES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        self.NOTE_FILENAMES = ["_left.png", "_top.png", "_mid.png", "_top.png", "_right.png", "_left.png", "_top.png",
+                               "_mid.png", "_top.png", "_mid.png", "_top.png", "_right.png", "_left.png"]
+        self.NOTE_COORDINATES = [1, 26, 35, 60, 69, 103, 129, 138, 162, 172, 196, 206, 240]
+    def setup_button(self):
+        font = QFont()
+        font.setPointSize(24)
+        self.gobutton = QPushButton("GO!", self)
+        self.gobutton.setFont(font)
+        self.gobutton.setGeometry(950, 10, 100, 100)
+        self.gobutton.clicked.connect(self.go_button_clicked)
+        self.gobutton.setStyleSheet("background-color: green;color: white;")
 
-        self.keys_img = ImageTk.PhotoImage(Image.open("images/keys.png"))
-        self.canvas.create_image(0, 400, image=self.keys_img, anchor="w")
+    def setup_labels(self):
+        self.scalelabel = QLabel("", self)
+        self.scalelabel.setGeometry(0, 300, 850, 50)
+        self.scalelabel.setFont(QFont("Arial", 36))
+        self.notelabel = QLabel("", self)
+        self.notelabel.setGeometry(1000, 300, 300, 50)
+        self.notelabel.setFont(QFont("Arial", 36))
 
-        self.images = {}
-        for i in IMAGE_NAMES:
-            image = ImageTk.PhotoImage(Image.open(f"images/{i}.png"))
-            self.images[i] = image
+        self.labels['keys'] = QLabel(self)
+        self.labels['keys'].setPixmap(QPixmap("/Users/williamcorney/PycharmProjects/jp-trainer/images/keys.png"))
+        self.labels['keys'].setGeometry(0, 150, 1060, 155)
+        for note in range(48, 101): self.labels[note] = QLabel(self)
 
-        self.notes_widgets = {}
-        self.button = Button(
-            self.canvas, text="NEXT", command=button_callback, height=2, width=20
-        )
-        self.button_replay = Button(
-            self.canvas, text="REPLAY", command=button_replay_callback, height=2, width=20
-        )
+    def setup_list_widgets(self):
+        self.theory_type = QListWidget(self)
+        self.theory_subtype = QListWidget(self)
+        self.subtheorysubtype = QListWidget(self)
+        self.list_widget4 = QListWidget(self)
 
-        self.q_label = Label(self.canvas, text="Press NEXT to Start", font=("Arial", 25))
-        self.q2_label = Label(self.canvas, text="", font=("Arial", 25))
+        for item in ["Scales", "Triads","Sevenths","Modes"]: self.theory_type.addItem(QListWidgetItem(item))
+        #self.theorytype.setCurrentRow(0)
+        self.theory_type.clicked.connect(self.theory_type_clicked)
+        self.theory_subtype.clicked.connect (self.theory_subtype_clicked)
+        self.theory_type.setGeometry(0, 0, 150, 125)
+        self.theory_subtype.setGeometry(150, 0, 150, 125)
+        self.subtheorysubtype.setGeometry(300, 0, 150, 125)
+        self.list_widget4.setGeometry(450, 0, 150, 125)
 
-        self.a_img = ImageTk.PhotoImage(Image.open("images/placeholder.png"))
-        self.a_label = Label(self.canvas, text="")
+        self.subtheorysubtype.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
 
-        self.option_var = StringVar(self.canvas)
-        self.option_var.set("MODES")
-        self.selected_option = "MODES"
-        self.option_widget = OptionMenu(
-            self.canvas, self.option_var, "MODES", "CHORDS", command=self.option_update
-        )
+        self.theory_subtype.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
 
-        self.canvas.create_window(300, 58, window=self.option_widget)
-        self.canvas.create_window(300, 100, window=self.button)
-        self.canvas.create_window(300, 150, window=self.button_replay)
-        self.canvas.create_window(700, 100, window=self.q_label)
-        self.canvas.create_window(700, 200, window=self.q2_label)
-        self.canvas.create_window(1000, 100, window=self.a_label)
+    def addnote(self, note, color):
 
-    def option_update(self, selected_option) -> None:
-        """
-        Update a selected option
-        """
-        self.selected_option = selected_option
+        self.xcord = self.NOTE_COORDINATES[note % 12] + ((note // 12) - 4) * 239
+        self.labels[note].setPixmap(QPixmap(self.BASE_PATH + color + self.NOTE_FILENAMES[note % 12]))
+        self.labels[note].setGeometry(self.xcord, 128, 100, 200)
+        self.labels[note].show()
 
-    def get_note_image(self, note_id: int) -> str:
-        """
-        Get a note`s image
-        """
-        real_note = None
-        for n in [72, 60, 48, 36]:
-            if note_id >= n:
-                real_note = note_id - n
-                break
-        return NOTES_TO_IMAGE_MAP[real_note] if real_note is not None else None
+    def removenote(self, note):
+        self.labels[note].hide()
+    # manipulating guis in these theory /theory subtype functions .  logic is in the
+    def theory_type_clicked (self):
+        self.subtheorysubtype.clear()
+        match self.theory_type.currentItem().text():
 
-    def add_note(self, note_id: int, is_green: bool = True) -> None:
-        """
-        Add a note widget to the UI
-        """
-        note_name = self.get_note_image(note_id)
-        note_image_name = f"key_green_{note_name}" if is_green else f"key_red_{note_name}"
-        new_img = self.canvas.create_image(
-            NOTES_X[note_id], NOTES_Y, image=self.images[note_image_name], anchor="w"
-        )
-        self.notes_widgets[note_id] = new_img
+            case "Scales":
+                self.theory_subtype.clear()
+                for item in ["major", "natural_minor", "melodic_minor", "harmonic_minor"]: self.theory_subtype.addItem(
+                    QListWidgetItem(item))
+            case "Triads":
+                self.theory_subtype.clear()
+                for item in ["major", "minor"]: self.theory_subtype.addItem(
+                    QListWidgetItem(item))
+            case "Sevenths":
+                self.theory_subtype.clear()
+                for item in ["major7", "minor7","dominant7","diminished7","half_diminished7"]: self.theory_subtype.addItem(
+                    QListWidgetItem(item))
+            case "Modes":
+                self.theory_subtype.clear()
+                for item in ["Ionian", "Dorian","Phrygian","Lydian","Mixolydian","Aeolian","Locrian"]: self.theory_subtype.addItem(
+                    QListWidgetItem(item))
 
-    def remove_note(self, note_id: int) -> None:
-        """
-        Remove a note widget from the UI
-        """
-        if note_id in self.notes_widgets:
-            self.canvas.delete(self.notes_widgets[note_id])
-            del self.notes_widgets[note_id]
+    def theory_subtype_clicked(self):
 
-    def update_question(self, txt: str) -> None:
-        """
-        Update a question text (UI)
-        """
-        self.q_label.config(text=txt)
-        self.q_label.text = txt
+        match self.theory_type.currentItem().text():
 
-    def update_answer(self, image_path: str, txt: str) -> None:
-        """
-        Update an answer image (UI)
-        """
-        new_img = ImageTk.PhotoImage(Image.open(image_path))
-        self.a_label.config(image=new_img)
-        self.a_label.image = new_img
-        self.q2_label.config(text=txt)
-        self.q2_label.text = txt
+
+            case "Triads":
+
+                self.subtheorysubtype.clear()
+                for item in ["root", "1st_inversion","2nd_inversion"]: self.subtheorysubtype.addItem(
+                    QListWidgetItem(item))
+            case "Sevenths":
+                self.subtheorysubtype.clear()
+                for item in ["root", "1st_inversion", "2nd_inversion","3rd_inversion"]: self.subtheorysubtype.addItem(
+                    QListWidgetItem(item))
+
+
+        pass
+
