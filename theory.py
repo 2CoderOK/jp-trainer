@@ -79,4 +79,4 @@ class ScaleGenerator:
                     self.modes[mode_key] = mode_notes
 
 # Example usage:
-ScaleGenerator = ScaleGenerator(base_midi_note=60, octaves=1)
+ScaleGenerator = ScaleGenerator(base_midi_note=60, octaves=2)

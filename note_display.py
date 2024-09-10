@@ -27,7 +27,7 @@ class MainWindow(QMainWindow ):
         font.setPointSize(24)
         self.gobutton = QPushButton("GO!", self)
         self.gobutton.setFont(font)
-        self.gobutton.setGeometry(950, 10, 100, 100)
+        self.gobutton.setGeometry(950, 10, 50, 50)
         self.gobutton.clicked.connect(self.go_button_clicked)
         self.gobutton.setStyleSheet("background-color: green;color: white;")
 
@@ -35,9 +35,18 @@ class MainWindow(QMainWindow ):
         self.scalelabel = QLabel("", self)
         self.scalelabel.setGeometry(0, 300, 850, 50)
         self.scalelabel.setFont(QFont("Arial", 36))
+        self.scalelabel2 = QLabel("", self)
+        self.scalelabel2.setGeometry(0, 350, 850, 50)
+        self.scalelabel2.setFont(QFont("Arial", 18))
+
         self.notelabel = QLabel("", self)
         self.notelabel.setGeometry(1000, 300, 300, 50)
         self.notelabel.setFont(QFont("Arial", 36))
+
+        # self.illustration = QLabel("", self)
+        # self.illustration.setGeometry(700, 0, 300, 100)
+        # self.illustration.setFont(QFont("Arial", 36))
+
 
         self.labels['keys'] = QLabel(self)
         self.labels['keys'].setPixmap(QPixmap("/Users/williamcorney/PycharmProjects/jp-trainer/images/keys.png"))
@@ -54,7 +63,7 @@ class MainWindow(QMainWindow ):
         #self.theorytype.setCurrentRow(0)
         self.theory_type.clicked.connect(self.theory_type_clicked)
         self.theory_subtype.clicked.connect (self.theory_subtype_clicked)
-        self.theory_type.setGeometry(0, 0, 150, 125)
+        self.theory_type.setGeometry(0, 00, 150, 125)
         self.theory_subtype.setGeometry(150, 0, 150, 125)
         self.subtheorysubtype.setGeometry(300, 0, 150, 125)
         self.list_widget4.setGeometry(450, 0, 150, 125)
