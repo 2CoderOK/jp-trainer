@@ -1,3 +1,4 @@
+
 class ScaleGenerator:
     def __init__(self, base_midi_note=60, octaves=1):
         self.base_midi_note = base_midi_note
@@ -34,7 +35,12 @@ class ScaleGenerator:
         for root in self.note_to_midi.keys():
             for scale_name, intervals in scale_intervals.items():
                 scale_key = f"{root} {scale_name}"
-                self.scales[scale_key] = self.get_midi_notes(root, intervals, repeat_root=True)
+                ascending_notes = self.get_midi_notes(root, intervals, repeat_root=True)
+                descending_notes = ascending_notes[::-1]
+                self.scales[scale_key] = {
+                    'ascending': ascending_notes,
+                    'descending': descending_notes
+                }
 
         return self.scales
 
@@ -74,9 +80,11 @@ class ScaleGenerator:
             if scale_type == 'major':
                 for i, mode_name in enumerate(mode_names):
                     mode_key = f"{root} {scale_type} {mode_name}"
-                    mode_notes = notes[i:] + [note + 12 for note in notes[:i]]
+                    mode_notes = notes['ascending'][i:] + [note + 12 for note in notes['ascending'][:i]]
                     mode_notes.append(mode_notes[0] + 12)  # Add the starting note at the end
                     self.modes[mode_key] = mode_notes
 
 # Example usage:
 ScaleGenerator = ScaleGenerator(base_midi_note=60, octaves=2)
+print(ScaleGenerator.scales['C major']['ascending'])
+print(ScaleGenerator.scales['C major']['descending'])

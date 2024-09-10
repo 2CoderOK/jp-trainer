@@ -11,6 +11,7 @@ class MainWindow(QMainWindow ):
         self.setWindowTitle("Jazz Piano Trainer")
         self.setGeometry(500, 300, 1060, 400)
         self.labels = {}
+        self.goodnotesbackup = []
 
         self.setup_button()
         self.setup_labels()
@@ -30,6 +31,11 @@ class MainWindow(QMainWindow ):
         self.gobutton.setGeometry(950, 10, 50, 50)
         self.gobutton.clicked.connect(self.go_button_clicked)
         self.gobutton.setStyleSheet("background-color: green;color: white;")
+        self.resetbutton = QPushButton("Reset", self)
+        self.resetbutton.setFont(font)
+        self.resetbutton.setGeometry(850, 10, 100, 50)
+        self.resetbutton.clicked.connect(self.reset_button_clicked)
+        self.resetbutton.setStyleSheet("background-color: green;color: white;")
 
     def setup_labels(self):
         self.scalelabel = QLabel("", self)
@@ -42,6 +48,11 @@ class MainWindow(QMainWindow ):
         self.notelabel = QLabel("", self)
         self.notelabel.setGeometry(1000, 300, 300, 50)
         self.notelabel.setFont(QFont("Arial", 36))
+
+        self.fingeringlabel = QLabel("", self)
+        self.fingeringlabel.setGeometry(600, 300, 300, 50)
+        self.fingeringlabel.setFont(QFont("Arial", 18))
+
 
         # self.illustration = QLabel("", self)
         # self.illustration.setGeometry(700, 0, 300, 100)
@@ -83,7 +94,10 @@ class MainWindow(QMainWindow ):
         self.labels[note].hide()
     # manipulating guis in these theory /theory subtype functions .  logic is in the
     def theory_type_clicked (self):
+
         self.subtheorysubtype.clear()
+        self.scalelabel.setText("")
+        self.scalelabel2.setText("")
         match self.theory_type.currentItem().text():
 
             case "Scales":
