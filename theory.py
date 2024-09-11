@@ -1,6 +1,15 @@
+from gui import MainWindow
+class Theory(MainWindow):
+    def __init__(self):
+        super().__init__()
 
-class ScaleGenerator:
-    def __init__(self, base_midi_note=60, octaves=1):
+
+        self.setup_theory_variables()
+        self.generate_scales()
+        self.generate_chords()
+        self.generate_modes()
+    def setup_theory_variables(self,base_midi_note=60, octaves=1):
+
         self.base_midi_note = base_midi_note
         self.octaves = octaves
         self.note_to_midi = {
@@ -12,10 +21,7 @@ class ScaleGenerator:
         self.triads = {}
         self.sevenths = {}
         self.modes = {}
-        self.generate_scales()
-        self.generate_chords()
-        self.generate_modes()
-
+        self.fingers = {"C major": "123 1234"}
     def get_midi_notes(self, root, intervals, repeat_root=False):
         root_midi = self.base_midi_note + self.note_to_midi[root]
         notes = []
@@ -27,10 +33,10 @@ class ScaleGenerator:
 
     def generate_scales(self):
         scale_intervals = {
-            'major': [0, 2, 4, 5, 7, 9, 11],
-            'natural_minor': [0, 2, 3, 5, 7, 8, 10],
-            'harmonic_minor': [0, 2, 3, 5, 7, 8, 11],
-            'melodic_minor': [0, 2, 3, 5, 7, 9, 11]
+            'Major': [0, 2, 4, 5, 7, 9, 11],
+            'Natural Minor': [0, 2, 3, 5, 7, 8, 10],
+            'Harmonic Minor': [0, 2, 3, 5, 7, 8, 11],
+            'Melodic Minor': [0, 2, 3, 5, 7, 9, 11]
         }
         for root in self.note_to_midi.keys():
             for scale_name, intervals in scale_intervals.items():
@@ -46,45 +52,57 @@ class ScaleGenerator:
 
     def generate_chords(self):
         triad_intervals = {
-            'major': [0, 4, 7],
-            'minor': [0, 3, 7]
+            'Major': [0, 4, 7],
+            'Minor': [0, 3, 7]
         }
+        # seventh_intervals = {
+        #     'major7': [0, 4, 7, 11],
+        #     'minor7': [0, 3, 7, 10],
+        #     'dominant7': [0, 4, 7, 10],
+        #     'diminished7': [0, 3, 6, 9],
+        #     'half_diminished7': [0, 3, 6, 10]
+        # }
+
         seventh_intervals = {
-            'major7': [0, 4, 7, 11],
-            'minor7': [0, 3, 7, 10],
-            'dominant7': [0, 4, 7, 10],
-            'diminished7': [0, 3, 6, 9],
-            'half_diminished7': [0, 3, 6, 10]
+            'Maj7': [0, 4, 7, 11],
+            'Min7': [0, 3, 7, 10],
+            '7': [0, 4, 7, 10],
+            'Dim7': [0, 3, 6, 9],
+            'm7f5': [0, 3, 6, 10]
         }
+
         for root in self.note_to_midi.keys():
             for triad_name, intervals in triad_intervals.items():
                 chord_name = f"{root} {triad_name}"
                 self.triads[chord_name] = {
-                    'root': self.get_midi_notes(root, intervals),
-                    '1st_inversion': self.get_midi_notes(root, intervals[1:] + [intervals[0] + 12]),
-                    '2nd_inversion': self.get_midi_notes(root, intervals[2:] + [intervals[0] + 12, intervals[1] + 12])
+                    'Root': self.get_midi_notes(root, intervals),
+                    'First': self.get_midi_notes(root, intervals[1:] + [intervals[0] + 12]),
+                    'Second': self.get_midi_notes(root, intervals[2:] + [intervals[0] + 12, intervals[1] + 12])
                 }
             for seventh_name, intervals in seventh_intervals.items():
                 chord_name = f"{root} {seventh_name}"
                 self.sevenths[chord_name] = {
-                    'root': self.get_midi_notes(root, intervals),
-                    '1st_inversion': self.get_midi_notes(root, intervals[1:] + [intervals[0] + 12]),
-                    '2nd_inversion': self.get_midi_notes(root, intervals[2:] + [intervals[0] + 12, intervals[1] + 12]),
-                    '3rd_inversion': self.get_midi_notes(root, intervals[3:] + [intervals[0] + 12, intervals[1] + 12, intervals[2] + 12])
+                    'Root': self.get_midi_notes(root, intervals),
+                    'First': self.get_midi_notes(root, intervals[1:] + [intervals[0] + 12]),
+                    'Second': self.get_midi_notes(root, intervals[2:] + [intervals[0] + 12, intervals[1] + 12]),
+                    'Third': self.get_midi_notes(root, intervals[3:] + [intervals[0] + 12, intervals[1] + 12, intervals[2] + 12])
                 }
 
     def generate_modes(self):
         mode_names = ['Ionian', 'Dorian', 'Phrygian', 'Lydian', 'Mixolydian', 'Aeolian', 'Locrian']
         for scale_key, notes in self.scales.items():
-            root, scale_type = scale_key.split()
-            if scale_type == 'major':
+            print(scale_key)
+            parts = scale_key.split()
+            root = parts[0]
+            scale_type = ' '.join(parts[1:])
+            print(f"Root: {root}, Scale Type: {scale_type}")
+            if scale_type == 'Major':
                 for i, mode_name in enumerate(mode_names):
                     mode_key = f"{root} {scale_type} {mode_name}"
                     mode_notes = notes['ascending'][i:] + [note + 12 for note in notes['ascending'][:i]]
-                    mode_notes.append(mode_notes[0] + 12)  # Add the starting note at the end
+                    if mode_notes[-1] != mode_notes[0] + 12:
+                        mode_notes.append(
+                            mode_notes[0] + 12)  # Add the starting note at the end if it's not already there
                     self.modes[mode_key] = mode_notes
 
-# Example usage:
-ScaleGenerator = ScaleGenerator(base_midi_note=60, octaves=2)
-print(ScaleGenerator.scales['C major']['ascending'])
-print(ScaleGenerator.scales['C major']['descending'])
+#
