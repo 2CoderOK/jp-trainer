@@ -2,37 +2,47 @@ from theory import Theory,MainWindow
 from PyQt6.QtWidgets import QListWidgetItem
 from PyQt6.QtGui import QPixmap, QFont
 import random, copy
+import pygame
+
 class AppFunctions (Theory):
 
     def __init__(self):
         super().__init__()
         self.incorrect_note_count = 0
+        self.previous_scale = None
+        self.previous_mode = None
+        self.previous_seventh = None
+
+        pygame.mixer.init()
 
 
     def note_handler(self, mididata):
         if mididata.type == "note_on":
+
             self.notelabel.setText(str(mididata.note))
-            print(f"goodnotes = {self.goodnotes} deepnotes =  {self.deepnotes}")
 
                 # Check if the note matches the first value of self.goodnotes
             if mididata.note == self.goodnotes[0]:
+
                 self.add_note_to_screen(mididata.note, "green")
                 self.scalelabel2.setText(f"{self.goodnotes}")
                 self.goodnotes.pop(0)  # Remove the first item
-                print(f" POP!!! - goodnotes = {self.goodnotes} deepnotes =  {self.deepnotes}")
 
                 # Check if self.goodnotes is empty
                 if len(self.goodnotes) == 0:
 
                     self.go_button_clicked()
-                    print(f'REFILL - {self.goodnotes}')
+
 
             else:
                 self.add_note_to_screen(mididata.note, "red")
                 self.incorrect_note_count += 1
+                sound2 = pygame.mixer.Sound("/Users/williamcorney/Downloads/2.mp3")
+                sound2.play()
 
                 # Check if the incorrect note count exceeds 2
                 if self.incorrect_note_count > 2:
+
                     self.reset_button_clicked()
 
         if mididata.type == "note_off":
@@ -45,8 +55,7 @@ class AppFunctions (Theory):
     def go_button_clicked(self):
         self.goodnotes = []
         try:
-            if len(self.goodnotes) == 0:
-                print(f"prior to refill - {self.theory_type.currentItem().text()}")
+
 
 
             match self.theory_type.currentItem().text():
@@ -134,50 +143,91 @@ class AppFunctions (Theory):
         try:
             scaletypesselected = [item.text() for item in self.theory_subtype.selectedItems()]
             inversionselected = [item.text() for item in self.subtheorysubtype.selectedItems()]
-            randomtype = (random.randint(0, len(scaletypesselected)))
-            randomnote = (random.randint(0, 11))
-            randominversion = (random.randint(1, len(inversionselected)))
-            randomnote = str(self.note_midi_list[randomnote])
 
-            randomtype = str(scaletypesselected[randomtype - 1])
-            randominversion = str(inversionselected[randominversion - 1])
-            print(self.triads)
-            self.goodnotes = copy.deepcopy(self.triads[randomnote + " " + randomtype][randominversion])
+            if not scaletypesselected or not inversionselected:
+                self.scalelabel2.setText("You need to select at least one sub type")
+                return
 
-            self.scalelabel.setText(f'{randomnote} {randomtype} {randominversion}')
+            while True:
+                randomtype = random.randint(0, len(scaletypesselected) - 1)
+                randomnote = random.randint(0, 11)
+                randominversion = random.randint(0, len(inversionselected) - 1)
+
+                randomnote_str = str(self.note_midi_list[randomnote])
+                randomtype_str = str(scaletypesselected[randomtype])
+                randominversion_str = str(inversionselected[randominversion])
+
+                current_scale = f'{randomnote_str} {randomtype_str} {randominversion_str}'
+
+                if current_scale != self.previous_scale:
+                    self.previous_scale = current_scale
+                    break
+
+            self.goodnotes = copy.deepcopy(self.triads[randomnote_str + " " + randomtype_str][randominversion_str])
+
+            self.scalelabel.setText(current_scale)
             self.scalelabel2.setText(f"{self.goodnotes}")
             self.deepnotes = copy.deepcopy(self.goodnotes)
-        except:
-            self.scalelabel2.setText(f"You need to select at least one sub type")
+        except Exception as e:
+            self.scalelabel2.setText(f"An error occurred: {e}")
+
     def sevenths_clicked(self):
         try:
             scaletypesselected = [item.text() for item in self.theory_subtype.selectedItems()]
             inversionselected = [item.text() for item in self.subtheorysubtype.selectedItems()]
-            randomtype = (random.randint(0, len(scaletypesselected)))
-            randomnote = (random.randint(1, 11))
-            randominversion = (random.randint(1, len(inversionselected)))
-            randomnote = str(self.note_midi_list[randomnote])
-            randomtype = str(scaletypesselected[randomtype - 1])
-            randominversion = str(inversionselected[randominversion - 1])
-            self.goodnotes = copy.deepcopy(self.sevenths[randomnote + " " + randomtype][randominversion])
-            self.scalelabel.setText(f'{randomnote} {randomtype} {randominversion}')
+
+            if not scaletypesselected or not inversionselected:
+                self.scalelabel2.setText("You need to select at least one item from all boxes above")
+                return
+
+            while True:
+                randomtype = random.randint(0, len(scaletypesselected) - 1)
+                randomnote = random.randint(1, 11)
+                randominversion = random.randint(0, len(inversionselected) - 1)
+
+                randomnote_str = str(self.note_midi_list[randomnote])
+                randomtype_str = str(scaletypesselected[randomtype])
+                randominversion_str = str(inversionselected[randominversion])
+
+                current_seventh = f'{randomnote_str} {randomtype_str} {randominversion_str}'
+
+                if current_seventh != self.previous_seventh:
+                    self.previous_seventh = current_seventh
+                    break
+
+            self.goodnotes = copy.deepcopy(self.sevenths[randomnote_str + " " + randomtype_str][randominversion_str])
+            self.scalelabel.setText(current_seventh)
             self.scalelabel2.setText(f"{self.goodnotes}")
             self.deepnotes = copy.deepcopy(self.goodnotes)
-        except:
-            self.scalelabel2.setText(f"You need to select at least one item from all boxes above")
+        except Exception as e:
+            self.scalelabel2.setText(f"An error occurred: {e}")
 
     def modes_clicked(self):
         try:
             scaletypesselected = [item.text() for item in self.theory_subtype.selectedItems()]
-            randomtype = (random.randint(0, len(scaletypesselected)))
-            randomnote = (random.randint(1, 11))
-            randomnote = str(self.note_midi_list[randomnote])
-            randomtype = str(scaletypesselected[randomtype - 1])
-            self.goodnotes = self.modes[randomnote + " Major " + randomtype]
-            self.scalelabel.setText(f'{randomnote} {randomtype}')
+
+            if not scaletypesselected:
+                self.scalelabel2.setText("You need to select at least one sub type")
+                return
+
+            while True:
+                randomtype = random.randint(0, len(scaletypesselected) - 1)
+                randomnote = random.randint(1, 11)
+
+                randomnote_str = str(self.note_midi_list[randomnote])
+                randomtype_str = str(scaletypesselected[randomtype])
+
+                current_mode = f'{randomnote_str} {randomtype_str}'
+
+                if current_mode != self.previous_mode:
+                    self.previous_mode = current_mode
+                    break
+
+            self.goodnotes = self.modes[randomnote_str + " Major " + randomtype_str]
+            self.scalelabel.setText(current_mode)
             self.scalelabel2.setText(f"{self.goodnotes}")
-        except:
-            pass
+        except Exception as e:
+            self.scalelabel2.setText(f"An error occurred: {e}")
 
     def reset_button_clicked(self):
         if hasattr(self, 'deepnotes') and self.deepnotes:

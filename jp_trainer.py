@@ -28,7 +28,7 @@ app = QApplication([])
 window = MainApp()
 window.show()
 
-print(window.generate_chords())
+
 
 
 with mido.open_input( callback=window.midi_callback) as inport: app.exec()
