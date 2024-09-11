@@ -12,17 +12,20 @@ class AppFunctions (Theory):
     def note_handler(self, mididata):
         if mididata.type == "note_on":
             self.notelabel.setText(str(mididata.note))
-            if mididata.note in self.goodnotes:
-                self.add_note_to_screen(mididata.note, "green")
-                self.scalelabel2.setText(f"{self.goodnotes}")
+            print(f"goodnotes = {self.goodnotes} deepnotes =  {self.deepnotes}")
 
                 # Check if the note matches the first value of self.goodnotes
-                if self.goodnotes and mididata.note == self.goodnotes[0]:
-                    self.goodnotes.pop(0)  # Remove the first item
+            if mididata.note == self.goodnotes[0]:
+                self.add_note_to_screen(mididata.note, "green")
+                self.scalelabel2.setText(f"{self.goodnotes}")
+                self.goodnotes.pop(0)  # Remove the first item
+                print(f" POP!!! - goodnotes = {self.goodnotes} deepnotes =  {self.deepnotes}")
 
-                    # Check if self.goodnotes is empty
-                    if len(self.goodnotes) == 0:
-                        self.go_button_clicked()
+                # Check if self.goodnotes is empty
+                if len(self.goodnotes) == 0:
+
+                    self.go_button_clicked()
+                    print(f'REFILL - {self.goodnotes}')
 
             else:
                 self.add_note_to_screen(mididata.note, "red")
@@ -40,8 +43,11 @@ class AppFunctions (Theory):
         self.scalelabel2.setText(f"{self.goodnotes}")
 
     def go_button_clicked(self):
-
+        self.goodnotes = []
         try:
+            if len(self.goodnotes) == 0:
+                print(f"prior to refill - {self.theory_type.currentItem().text()}")
+
 
             match self.theory_type.currentItem().text():
                 case 'Scales':
@@ -115,7 +121,7 @@ class AppFunctions (Theory):
             descending_notes = scales[current_scale]['descending']
 
             # Combine ascending and descending notes
-            self.goodnotes = ascending_notes + descending_notes
+            self.goodnotes = copy.deepcopy(ascending_notes + descending_notes)
             self.scalelabel.setText(current_scale)
             self.scalelabel2.setText(f"{self.goodnotes}")
             # Update the previous scale
@@ -129,14 +135,14 @@ class AppFunctions (Theory):
             scaletypesselected = [item.text() for item in self.theory_subtype.selectedItems()]
             inversionselected = [item.text() for item in self.subtheorysubtype.selectedItems()]
             randomtype = (random.randint(0, len(scaletypesselected)))
-            randomnote = (random.randint(1, 11))
+            randomnote = (random.randint(0, 11))
             randominversion = (random.randint(1, len(inversionselected)))
             randomnote = str(self.note_midi_list[randomnote])
 
             randomtype = str(scaletypesselected[randomtype - 1])
             randominversion = str(inversionselected[randominversion - 1])
             print(self.triads)
-            self.goodnotes = (self.triads[randomnote + " " + randomtype][randominversion])
+            self.goodnotes = copy.deepcopy(self.triads[randomnote + " " + randomtype][randominversion])
 
             self.scalelabel.setText(f'{randomnote} {randomtype} {randominversion}')
             self.scalelabel2.setText(f"{self.goodnotes}")
@@ -153,7 +159,7 @@ class AppFunctions (Theory):
             randomnote = str(self.note_midi_list[randomnote])
             randomtype = str(scaletypesselected[randomtype - 1])
             randominversion = str(inversionselected[randominversion - 1])
-            self.goodnotes = (self.sevenths[randomnote + " " + randomtype][randominversion])
+            self.goodnotes = copy.deepcopy(self.sevenths[randomnote + " " + randomtype][randominversion])
             self.scalelabel.setText(f'{randomnote} {randomtype} {randominversion}')
             self.scalelabel2.setText(f"{self.goodnotes}")
             self.deepnotes = copy.deepcopy(self.goodnotes)
@@ -175,6 +181,7 @@ class AppFunctions (Theory):
 
     def reset_button_clicked(self):
         if hasattr(self, 'deepnotes') and self.deepnotes:
+
             self.goodnotes = copy.deepcopy(self.deepnotes)
             self.scalelabel2.setText(f"{self.goodnotes}")
         else:

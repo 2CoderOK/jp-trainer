@@ -22,13 +22,23 @@ class Theory(MainWindow):
         self.sevenths = {}
         self.modes = {}
         self.fingers = {"C major": "123 1234"}
+
     def get_midi_notes(self, root, intervals, repeat_root=False):
+        if root not in self.note_to_midi:
+            print(f"Invalid root note: {root}")
+            return []
+
         root_midi = self.base_midi_note + self.note_to_midi[root]
         notes = []
         for octave in range(self.octaves):
             notes.extend([root_midi + interval + 12 * octave for interval in intervals])
+
         if repeat_root:
             notes.append(root_midi + 12 * self.octaves)
+
+        if not notes:
+            print(f"Generated empty notes for root: {root}, intervals: {intervals}")
+
         return notes
 
     def generate_scales(self):
@@ -98,14 +108,14 @@ class Theory(MainWindow):
                     'Third': self.get_midi_notes(root, intervals[3:] + [intervals[0] + 12, intervals[1] + 12, intervals[2] + 12])
                 }
 
+        return self.triads
+
     def generate_modes(self):
         mode_names = ['Ionian', 'Dorian', 'Phrygian', 'Lydian', 'Mixolydian', 'Aeolian', 'Locrian']
         for scale_key, notes in self.scales.items():
-            print(scale_key)
             parts = scale_key.split()
             root = parts[0]
             scale_type = ' '.join(parts[1:])
-            print(f"Root: {root}, Scale Type: {scale_type}")
             if scale_type == 'Major':
                 for i, mode_name in enumerate(mode_names):
                     mode_key = f"{root} {scale_type} {mode_name}"
@@ -116,3 +126,5 @@ class Theory(MainWindow):
                     self.modes[mode_key] = mode_notes
 
 #
+
+
