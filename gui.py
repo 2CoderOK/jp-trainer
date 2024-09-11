@@ -36,7 +36,6 @@ class MainWindow(QMainWindow):
         self.gobutton.clicked.connect(self.go_button_clicked)
         self.gobutton.setStyleSheet("background-color: green;color: white;")
 
-
     def setup_labels(self):
         self.labels = {}
 

@@ -38,11 +38,21 @@ class Theory(MainWindow):
             'Harmonic Minor': [0, 2, 3, 5, 7, 8, 11],
             'Melodic Minor': [0, 2, 3, 5, 7, 9, 11]
         }
+
+        descending_intervals = {
+            'Harmonic Minor': [10, 8, 7, 5, 3, 2, 0]  # Natural Minor intervals for descending
+        }
+
         for root in self.note_to_midi.keys():
             for scale_name, intervals in scale_intervals.items():
                 scale_key = f"{root} {scale_name}"
                 ascending_notes = self.get_midi_notes(root, intervals, repeat_root=True)
-                descending_notes = ascending_notes[::-1]
+
+                if scale_name == 'Harmonic Minor':
+                    descending_notes = self.get_midi_notes(root, descending_intervals[scale_name], repeat_root=True)
+                else:
+                    descending_notes = ascending_notes[::-1]
+
                 self.scales[scale_key] = {
                     'ascending': ascending_notes,
                     'descending': descending_notes
