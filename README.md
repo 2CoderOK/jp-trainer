@@ -1,3 +1,25 @@
+# 🎹 JazzPianoTrainer — Now Supercharged as JazzPianoLab!
+
+I’ve created a beefy new version of JazzPianoTrainer, now called **JazzPianoLab**!  
+It's written in C++ and uses JUCE 8 audio framework.
+
+JazzPianoLab is packed with powerful features for modern musicians and educators:
+
+- **VST3 Virtual Instrument Support**
+- **Advanced Chord Profile System**
+- **Real-Time Chord Identification**
+- **Built-in MIDI Recorder**
+- *And much more!*
+
+If you’re looking for a next-level jazz piano training tool, check out [JazzPianoLab](https://jazzpianolab.app/s/4p7ZtR) for the latest updates, downloads and  resources.
+
+Feel free to explore and share your feedback.  
+Let’s make jazz piano learning smarter and more fun together!
+
+[<img alt="JazzPianoLabr" src="https://jazzpianolab.app/static/assets/img/illustrations/jpl_image_5.jpg" />](https://jazzpianolab.app/s/4p7ZtR)
+
+================================== Jazz Piano Trainer =======================================
+
 # jp-trainer
 Jazz Piano Trainer 
 
