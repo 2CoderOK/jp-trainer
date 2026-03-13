@@ -1,24 +1,30 @@
-# 🎹 JazzPianoTrainer — Now Supercharged as JazzPianoLab!
+🚨 WARNING: INCOMING SHAMELESS PLUG 🚨
+Please avert your eyes if you are allergic to indie devs promoting their own stuff on their free MIT repos! 🫣
 
-I’ve created a beefy new version of JazzPianoTrainer, now called **JazzPianoLab**!  
-It's written in C++ and uses JUCE 8 audio framework.
+🎹 JazzPianoTrainer — Meet its beefy C++ sibling, [JazzPianoLab](https://jazzpianolab.app/s/4p7ZtR)!
 
-JazzPianoLab is packed with powerful features for modern musicians and educators:
+I loved working on this repo, but my curiosity got the better of me. I really wanted to build my own highly controllable audio tool from the ground up, just to see what I could do. Fast forward a bit, and I accidentally spent way too much time creating a massive, supercharged version called [JazzPianoLab](https://jazzpianolab.app/s/4p7ZtR)!
 
-- **VST3 Virtual Instrument Support**
-- **Advanced Chord Profile System**
-- **Real-Time Chord Identification**
-- **Built-in MIDI Recorder**
-- *And much more!*
+It's written in C++ using the JUCE 8 audio framework and is packed with features I nerded out on:
 
-If you’re looking for a next-level jazz piano training tool, check out [JazzPianoLab](https://jazzpianolab.app/s/4p7ZtR) for the latest updates, downloads and  resources.
+🎹 VST3 Virtual Instrument Support
 
-Feel free to explore and share your feedback.  
+🎼 Advanced Chord Profile System
+
+⚡ Real-Time Chord Identification
+
+🔴 Built-in MIDI Recorder
+
+...and much more!
+
+Don't worry, this MIT project isn't going anywhere! But if you’re looking for a next-level jazz piano training tool (or just want to see what happens when a developer gets completely carried away), check out [JazzPianoLab](https://jazzpianolab.app/s/4p7ZtR) for the latest updates and downloads.
+
 Let’s make jazz piano learning smarter and more fun together!
 
-[<img alt="JazzPianoLabr" src="https://jazzpianolab.app/static/assets/img/illustrations/jpl_image_5.jpg" />](https://jazzpianolab.app/s/4p7ZtR)
+[<img width="500px" alt="JazzPianoLabr" src="https://jazzpianolab.app/static/assets/img/illustrations/jpl_image_5.jpg" />](https://jazzpianolab.app/s/4p7ZtR)
 
-================================== Jazz Piano Trainer =======================================
+Anyway, enough about that—now let's get back to JazzPianoTrainer! :)
+
 
 # jp-trainer
 Jazz Piano Trainer 
