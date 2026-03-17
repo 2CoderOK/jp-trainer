@@ -1,0 +1,44 @@
+{
+  "SCALES": [
+    "C", "C#", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"
+  ],
+  "SCALES_MIDI": [36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47],
+  "CHORDS": [
+    "maj7", "min7", "min7/b5", "7", "dim", "aug", "7/#11", "maj7/#5", "minM7", "sus4/7", "6", "min6"
+  ],
+  "CHORDS_MIDI": [
+    [4,3,4], [3,4,3], [3,3,4], [4,3,3], [3,3,3], [4,4,2], [4,2,4], [4,4,3], [3,4,4], [5,2,3], [4,3,2], [3,4,2]
+  ],
+  "BASIC_CHORDS": [0,1,3,4,5,10,11],
+  "MODES": ["Ionian","Dorian","Phrygian","Lydian","Mixolydian","Aeolian","Loerian"],
+  "MODES_DESC": [
+    "Ionian (W,W,H,W,W,W,H)",
+    "Dorian (W,H,W,W,W,H,W)",
+    "Phrygian (H,W,W,W,H,W,W)",
+    "Lydian (W,W,W,H,W,W,H)",
+    "Mixolydian (W,W,H,W,W,H,W)",
+    "Aeolian (W,H,W,W,H,W,W)",
+    "Loerian (H,W,W,H,W,W,W)"
+  ],
+  "MODES_MIDI": [
+    [2,2,1,2,2,2,1], [2,1,2,2,2,1,2], [1,2,2,2,1,2,2], [2,2,2,1,2,2,1], [2,2,1,2,2,1,2], [2,1,2,2,1,2,2], [1,2,2,1,2,2,2]
+  ],
+  "MODES_DIR": ["ascending","descending"],
+  "CHORD_INVERSIONS": [
+    "base - chord",
+    "bass root - 2nd inversion chord",
+    "bass root - 3rd inversion chord",
+    "bass root - single notes up",
+    "bass root - single notes down",
+    "1st inversion - chord",
+    "1st inversion - single notes up",
+    "1st inversion - single notes down",
+    "2nd inversion - chord",
+    "2nd inversion - single notes up",
+    "2nd inversion - single notes down",
+    "3rd inversion - chord",
+    "3rd inversion - single notes up",
+    "3rd inversion - single notes down"
+  ],
+  "BASIC_CHORD_INVERSIONS": [0,3]
+}
